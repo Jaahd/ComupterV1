@@ -1,3 +1,8 @@
+import re 
+import sys
+
+from collections import OrderedDict
+from decimal import Decimal
 
 # regex to match the entire polynominal, to check if the syntax is correct
 checkLineRegex = r"^(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+=(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+$"
@@ -6,13 +11,8 @@ checkLineRegex = r"^(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\
 regex = r"(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*x\s*\^\s*(\d+)\s*|\*?\s*x\s*)?)"
 
 
-
-'''
-    computerV1Usage: usage display when the script hasn't been called correctly
-
-'''
 def computerV1Usage(nbArgs):
-    import sys
+    ''' computerV1Usage: usage display when the script hasn't been called correctly '''
 
     if nbArgs == 1:
         print("\nComputerV1: Too few arguments")
@@ -23,7 +23,8 @@ def computerV1Usage(nbArgs):
 check again:")
 
     print("\nUsage:\n\n\tpython ComputerV1.py \"<equation>\"\n")
-    print("equation format:\n\t\"c * X^0 + b * X^1 + a * X^2\"")
+    print("equation format:\n\t\"EXPR = EXPR\"")
+    print("EXPR format:\n\t\"c * X^0 + b * X^1 + a * X^2\"")
     print("\t\"c + b * X + a * x^2\"")
     print("\t\twith a, b and c or more to be positive or negative intergers or \
 floats\n")
@@ -31,12 +32,8 @@ floats\n")
     sys.exit()
 
 
-
-'''
-    sqrRoot: return the square root of a given number, with a precision of 1/10
-
-'''
 def sqrRoot(num, prec = None):
+    ''' sqrRoot: return the square root of a given number, with a precision of 1/10 '''
 
     if not prec:
         prec = 0.0000000001
@@ -52,36 +49,23 @@ def sqrRoot(num, prec = None):
     return root
 
 
-
-'''
-    absVal: return the absolute value of the given number
-
-'''
 def absVal(nb):
+    ''' absVal: return the absolute value of the given number '''
 
     ret = nb if nb > 0 else nb * -1
 
     return formatNb(ret)
 
 
-
-'''
-    formatNb: remove trailling zeros from float numbers
-
-'''
 def formatNb(nb):
-    from decimal import Decimal
+    ''' formatNb: remove trailling zeros from float numbers '''
+
 
     return '%g' % (Decimal(str(nb)))
 
 
-
-'''
-    checkSyntax: check the correctness of the given polynominal
-
-'''
 def checkSyntax(args):
-    import re
+    ''' checkSyntax: check the correctness of the given polynominal '''
 
     print("\nGiven equation: %s" % args)
 
@@ -92,12 +76,8 @@ def checkSyntax(args):
 
 
 
-'''
-    getCoefNDegree: get the coef and the degree of each part of the polynominal
-
-'''
 def getCoefNDegree(ret, argStr, sign):
-    import re
+    ''' getCoefNDegree: get the coef and the degree of each part of the polynominal '''
 
     posMatches = re.findall(regex, argStr, re.IGNORECASE)
 
@@ -116,15 +96,10 @@ def getCoefNDegree(ret, argStr, sign):
         ret[key] = val if key not in ret else ret[key] + val
 
 
-
-'''
-    checkAgrs: create a dictionary containing each degree in the polynominal
-               and their coeficiant
-
-'''
 def createDict(argStr):
-    import re, sys
-    from collections import OrderedDict
+    ''' checkAgrs: create a dictionary containing each degree in the polynominal
+        and their coeficiant
+    '''
 
     patern = re.compile(regex)
 
@@ -139,27 +114,29 @@ def createDict(argStr):
     return OrderedDict(sorted(dict.items()))
 
 
-
-'''
-    printReducForm: print the reduced form of the polynominal and its degree
-
-'''
 def printReducForm(ordDict):
+    ''' printReducForm: print the reduced form of the polynominal and its degree '''
 
+    print(ordDict)
     toPrint = "Reduced form:  "
+    tmp = ""
     for elt in ordDict:
+        print(ordDict[elt])
         if elt >= 0:
             if ordDict[elt] < 0:
-                toPrint += " -"
-            if elt > 0 and ordDict[elt] > 0:
-                toPrint += " +"
+                tmp += " -"
+            if elt > 0 and ordDict[elt] > 0 and tmp != "":
+                tmp += " +"
             valAbs = absVal(ordDict[elt])
-            toPrint += " %s" % valAbs
+            tmp += " %s" % valAbs
         if elt > 0:
-            toPrint += " * X"
+            tmp += " * X"
         if elt > 1:
-            toPrint += "^%d" %elt
+            tmp += "^%d" %elt
 
+    if tmp != "":
+        toPrint += tmp
+    print(toPrint)
     toPrint += " = 0"
 
     print("%s\n" % toPrint)
@@ -171,11 +148,8 @@ def printReducForm(ordDict):
 
 
 
-'''
-    degree2Solutions: display the results when the polynominal degree is 2
-
-'''
 def degree2Solutions(ordDict):
+    ''' degree2Solutions: display the results when the polynominal degree is 2 '''
 
     a = 0 if 2 not in ordDict else ordDict[2]
     b = 0 if 1 not in ordDict else ordDict[1]
@@ -198,23 +172,23 @@ has 2 real solutions:\n\t%s\n\t%s\n" % (formatNb(delta), formatNb(x1), formatNb(
     if delta < 0:
         x1 = -b /(2 * a)
         x2 = sqrRoot(delta) / (2 * a)
-        print("The discriminant, %s, is stricly negative, the polynominal has 2\
- complexe solutions:\n\t%s + i * %s\n\t%s - i * %s\n" \
+        print("The discriminant, %s, is stricly negative, the polynominal has 2 \
+complexe solutions:\n\t%s + i * %s\n\t%s - i * %s\n" \
 % (formatNb(delta), formatNb(x1), formatNb(x2), formatNb(x1), formatNb(x2)))
 
 
 
-'''
-    degree1Solution: display the result when the polynominal degree is 1 or less
-
-'''
 def degree1Solution(ordDict):
+    ''' degree1Solution: display the result when the polynominal degree is 1 or less '''
 
     a = 0 if 1 not in ordDict else ordDict[1]
     b = 0 if 0 not in ordDict else ordDict[0]
 
     if a == 0:
-        print("All the real numbers are solutions for this polynominal.\n")
+        if ordDict[0] != 0:
+            print("There are no solution for this polynominal.\n")
+        else:
+            print("All the real numbers are solutions for this polynominal.\n")
     else:
         x = -b / a
         print("The only solution for this polynominal is: %s.\n" % formatNb(x))
