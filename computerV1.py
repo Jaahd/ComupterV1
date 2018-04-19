@@ -1,4 +1,5 @@
-import re 
+#!/usr/bin/python3
+import re
 import sys
 
 from collections import OrderedDict
@@ -151,7 +152,7 @@ def printReducForm(ordDict):
 
     if tmp != "":
         toPrint += tmp
-    
+
     toPrint += " = 0"
     print(toPrint)
 
