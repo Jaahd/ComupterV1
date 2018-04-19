@@ -172,24 +172,26 @@ def degree2Solutions(ordDict):
 
     delta = (b * b) - (4 * a * c)
 
+    deltaStr = "(%s)^2 - (4 * %s * %s)" % (b, a, c)
     if delta > 0:
         if a:
             root = sqrRoot(delta)
             x1 = (-b - root) / (2 * a)
             x2 = (-b + root) / (2 * a)
-            print("The discriminant, %s, is stricly positive, the polynominal \
-has 2 real solutions:\n\t%s\n\t%s\n" % (formatNb(delta), formatNb(x1), formatNb(x2)))
+            print("The discriminant: %s = %s, is stricly positive, the polynominal \
+has 2 real solutions:\n\t%s\n\t%s\n" % (deltaStr, formatNb(delta), formatNb(x1), formatNb(x2)))
 
     if delta == 0:
         x = -b / (2 * a)
-        print("The discriminant is 0, the only solution is: %s\n" % formatNb(x))
+        xStr = "(-1 * %s) / (2 * %s)" % (b, a)
+        print("The discriminant: %s = 0, is zero, the only solution is: %s = %s\n" % (deltaStr, xStr, formatNb(x)))
 
     if delta < 0:
         x1 = -b /(2 * a)
         x2 = sqrRoot(delta) / (2 * a)
-        print("The discriminant, %s, is stricly negative, the polynominal has 2 \
+        print("The discriminant, %s = %s, is stricly negative, the polynominal has 2 \
 complexe solutions:\n\t%s + i * %s\n\t%s - i * %s\n" \
-% (formatNb(delta), formatNb(x1), formatNb(x2), formatNb(x1), formatNb(x2)))
+% (deltaStr, formatNb(delta), formatNb(x1), formatNb(x2), formatNb(x1), formatNb(x2)))
 
 
 
