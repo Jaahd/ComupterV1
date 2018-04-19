@@ -5,10 +5,10 @@ from collections import OrderedDict
 from decimal import Decimal
 
 # regex to match the entire polynominal, to check if the syntax is correct
-checkLineRegex = r"^(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+=(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+$"
+checkLineRegex = r"^(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+=(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+$"
 
 # regex to get each of the relevant portions of the polynominal
-regex = r"(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*x\s*\^\s*(\d+)\s*|\*?\s*x\s*)?)"
+regex = r"(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*x\s*\^\s*(\d+)\s*|\*?\s*x\s*)?)"
 
 
 def computerV1Usage(nbArgs):
@@ -19,15 +19,13 @@ def computerV1Usage(nbArgs):
     elif nbArgs > 2:
         print("\nComputerV1: Too many arguments")
     elif nbArgs == -1:
-        print("ComputerV1: The syntax of the polynominal is incorrect, please \
-check again:")
+        print("ComputerV1: The syntax of the polynominal is incorrect, please check again:")
 
     print("\nUsage:\n\n\tpython ComputerV1.py \"<equation>\"\n")
     print("equation format:\n\t\"EXPR = EXPR\"")
     print("EXPR format:\n\t\"c * X^0 + b * X^1 + a * X^2\"")
     print("\t\"c + b * X + a * x^2\"")
-    print("\t\twith a, b and c or more to be positive or negative intergers or \
-floats\n")
+    print("\t\twith a, b and c or more to be positive or negative intergers or floats\n")
 
     sys.exit()
 
@@ -66,9 +64,18 @@ def formatNb(nb):
 
 def checkSyntax(args):
     ''' checkSyntax: check the correctness of the given polynominal '''
-
-    print("\nGiven equation: %s" % args)
-
+    toPrint = "\nGiven equation: "
+    for char in args:
+        if char in "+*=":
+            toPrint += ' '
+        if not char.isspace():
+            if char.isalpha():
+                toPrint += char.upper()
+            else:
+                toPrint += char
+        if char in "+*=":
+            toPrint += ' '
+    print(toPrint)
     patern = re.compile(checkLineRegex)
 
     if not patern.match(args):
@@ -90,9 +97,14 @@ def getCoefNDegree(ret, argStr, sign):
         else:
             key = 0
 
-        val = elt[2].replace(',', '.')
-        val = (float(val) * (-1 * sign[0]) if elt[1] == '-' else
-               float(val) * (-1 * sign[1]))
+        val = 0
+        if (elt[3] and elt[2]) or (elt[2] and not elt[3]):
+            val = elt[2].replace(',', '.')
+            val = (float(val) * (-1 * sign[0]) if elt[1] == '-' else
+                   float(val) * (-1 * sign[1]))
+        elif elt[3]:
+            val = 1
+
         ret[key] = val if key not in ret else ret[key] + val
 
 
@@ -117,11 +129,14 @@ def createDict(argStr):
 def printReducForm(ordDict):
     ''' printReducForm: print the reduced form of the polynominal and its degree '''
 
-    print(ordDict)
-    toPrint = "Reduced form:  "
+    if not ordDict:
+        print("Polynominal degree: 0\n")
+        return 0
+
+    toPrint = "\nReduced form:  "
     tmp = ""
     for elt in ordDict:
-        print(ordDict[elt])
+
         if elt >= 0:
             if ordDict[elt] < 0:
                 tmp += " -"
@@ -136,10 +151,9 @@ def printReducForm(ordDict):
 
     if tmp != "":
         toPrint += tmp
-    print(toPrint)
+    
     toPrint += " = 0"
-
-    print("%s\n" % toPrint)
+    print(toPrint)
 
     polyDegree = max(ordDict, key=int)
     print("Polynominal degree: %d\n" % polyDegree)
@@ -185,7 +199,7 @@ def degree1Solution(ordDict):
     b = 0 if 0 not in ordDict else ordDict[0]
 
     if a == 0:
-        if ordDict[0] != 0:
+        if ordDict and ordDict[0] != 0:
             print("There are no solution for this polynominal.\n")
         else:
             print("All the real numbers are solutions for this polynominal.\n")
