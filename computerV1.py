@@ -6,7 +6,7 @@ from collections import OrderedDict
 from decimal import Decimal
 
 # regex to match the entire polynominal, to check if the syntax is correct
-checkLineRegex = r"^(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+=(([+-]?)\s*(\d+[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+$"
+checkLineRegex = r"^(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+=(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*[xX]\s*\^\s*(\d+)\s*|\*?\s*[xX]\s*)?)+$"
 
 # regex to get each of the relevant portions of the polynominal
 regex = r"(([+-]?)\s*(\d*[\.,]?\d*)\s*(\*?\s*x\s*\^\s*(\d+)\s*|\*?\s*x\s*)?)"
@@ -104,7 +104,7 @@ def getCoefNDegree(ret, argStr, sign):
             val = (float(val) * (-1 * sign[0]) if elt[1] == '-' else
                    float(val) * (-1 * sign[1]))
         elif elt[3]:
-            val = 1
+            val = 1 * (-1 * sign[0]) if elt[1] == '-' else 1 * (-1 * sign[1])
 
         ret[key] = val if key not in ret else ret[key] + val
 
@@ -130,10 +130,10 @@ def createDict(argStr):
 def printReducForm(ordDict):
     ''' printReducForm: print the reduced form of the polynominal and its degree '''
 
+    print(ordDict)
     if not ordDict:
-        print("Polynominal degree: 0\n")
+        print("\nReduced form: 0 = 0\nPolynominal degree: 0\n")
         return 0
-
     toPrint = "\nReduced form:  "
     tmp = ""
     for elt in ordDict:
@@ -207,7 +207,10 @@ def degree1Solution(ordDict):
         else:
             print("All the real numbers are solutions for this polynominal.\n")
     else:
-        x = -b / a
+        
+        x = -1 * b / a
+        if x == 0:
+            x = 0 
         print("The only solution for this polynominal is: %s.\n" % formatNb(x))
 
 
