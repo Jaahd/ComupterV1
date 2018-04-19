@@ -135,8 +135,8 @@ def printReducForm(ordDict):
         return 0
     toPrint = "\nReduced form:  "
     tmp = ""
+    
     for elt in ordDict:
-
         if elt >= 0:
             if ordDict[elt] < 0:
                 tmp += " -"
@@ -188,7 +188,7 @@ has 2 real solutions:\n\t%s\n\t%s\n" % (deltaStr, formatNb(delta), formatNb(x1),
     if delta < 0:
         x1 = -b /(2 * a)
         x2 = sqrRoot(delta) / (2 * a)
-        print(x1, x2)
+        
         toPrint = "The discriminant, %s = %s, is stricly negative, the polynominal has 2 \
 complexe solutions:\n\t" % (deltaStr, formatNb(delta))
         if x1:
