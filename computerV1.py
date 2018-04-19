@@ -130,7 +130,6 @@ def createDict(argStr):
 def printReducForm(ordDict):
     ''' printReducForm: print the reduced form of the polynominal and its degree '''
 
-    print(ordDict)
     if not ordDict:
         print("\nReduced form: 0 = 0\nPolynominal degree: 0\n")
         return 0
@@ -189,10 +188,17 @@ has 2 real solutions:\n\t%s\n\t%s\n" % (deltaStr, formatNb(delta), formatNb(x1),
     if delta < 0:
         x1 = -b /(2 * a)
         x2 = sqrRoot(delta) / (2 * a)
-        print("The discriminant, %s = %s, is stricly negative, the polynominal has 2 \
-complexe solutions:\n\t%s + i * %s\n\t%s - i * %s\n" \
-% (deltaStr, formatNb(delta), formatNb(x1), formatNb(x2), formatNb(x1), formatNb(x2)))
+        print(x1, x2)
+        toPrint = "The discriminant, %s = %s, is stricly negative, the polynominal has 2 \
+complexe solutions:\n\t" % (deltaStr, formatNb(delta))
+        if x1:
+            toPrint += "%s + " % formatNb(x1)
+        toPrint += "i * %s\n\t" % formatNb(x2)
+        if x1:
+            toPrint += "%s " % formatNb(x1)
+        toPrint += "- i * %s\n" % formatNb(x2)
 
+        print(toPrint)
 
 
 def degree1Solution(ordDict):
